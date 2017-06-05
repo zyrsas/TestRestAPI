@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.relations import StringRelatedField, PrimaryKeyRelatedField
+from rest_framework.relations import StringRelatedField
 from tests.models import Test, Question, Answer
 
 
@@ -10,19 +10,21 @@ class AnswerSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    answer = AnswerSerializer(many=False)
+
     class Meta:
         model = Question
         fields = ('question', 'answer')
-    answer = AnswerSerializer(many=False)
 
 
 class TestSerializer(serializers.ModelSerializer):
+    questions = QuestionSerializer(many=True)
+    user = StringRelatedField(many=False)
+
     class Meta:
         model = Test
         fields = ('id', 'title', 'questions', 'user')
 
-    questions = QuestionSerializer(many=True)
-    user = StringRelatedField(many=False)
 
 
 
